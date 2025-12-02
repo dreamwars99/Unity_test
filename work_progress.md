@@ -24,3 +24,19 @@
 - **맵 재생성 시 장식 요소가 삭제되는 문제 해결**:
   - 기존에는 `contentParent`의 모든 자식 오브젝트를 삭제하여, 수동으로 추가한 장식용 오브젝트까지 사라지는 문제가 있었음.
   - `MapGenerator.cs`의 청소 로직을 수정하여, 이름에 `"Row_Unit"`이 포함된 오브젝트만 선택적으로 삭제하도록 변경함.
+
+## [2025.12.02] (화)
+
+### 🎯 오늘의 목표 (Daily Goal)
+- '학습 시작 확인' 및 '콕 찌르기' 등 개별 팝업 기능 구현.
+
+### 💻 스크립트 로직 (Scripting & Logic)
+- `LessonPopup.cs`: '학습 시작' 팝업의 표시/숨김 로직 구현. `OpenPopup`, `ClosePopup`, `StartLesson` 함수를 `public`으로 만들어 유니티 에디터의 `Button` 컴포넌트와 연동.
+- `PopupManager.cs`: '콕 찌르기' 기능의 `popupPoke` 팝업을 관리하는 스크립트 추가. `OpenPokePopup`, `ClosePokePopup` 등의 함수를 통해 팝업을 제어. 현재는 '콕 찌르기' 전용 로직으로 구성됨.
+
+### 🎨 UI 및 연출 (UI & Visuals)
+- **개별 팝업 UI 구성**: `LessonPopup`과 `PokePopup`에 해당하는 `GameObject`를 `Hierarchy`에 구성.
+- **버튼 이벤트 연동**: 각 팝업 내의 버튼(시작, 닫기, 확인 등)에 `LessonPopup.cs`와 `PopupManager.cs`의 `public` 함수들을 `OnClick()` 이벤트로 연결하여 기능 활성화.
+
+### 🐛 이슈 해결 (Troubleshooting)
+- 특이사항 없음.
