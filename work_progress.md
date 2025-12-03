@@ -40,3 +40,26 @@
 
 ### 🐛 이슈 해결 (Troubleshooting)
 - 특이사항 없음.
+
+## [2025.12.03] (수)
+
+### 🎯 오늘의 목표 (Daily Goal)
+- 리그 순위를 표시하는 리더보드 UI 및 데이터 연동 기능 구현.
+
+### 💻 스크립트 로직 (Scripting & Logic)
+- **리더보드 동적 생성**: `LeagueManager.cs` 스크립트 작성.
+  - `Start()` 시점에 `CreateRankingList` 함수를 호출하여 랭킹 목록을 자동 생성.
+  - `Instantiate`를 통해 `rankItemPrefab`을 `contentArea` 내부에 순차적으로 생성함.
+  - 점수는 1등을 기준으로 `Random.Range`를 사용해 차감하는 방식으로 부여하여, 실제 랭킹과 유사한 데이터 분포를 시뮬레이션함.
+- **개별 랭킹 아이템 제어**: `RankItem.cs` 스크립트 작성.
+  - `SetData(rank, name, score, totalXP)` 함수를 `public`으로 선언하여, `LeagueManager`에서 각 `Prefab`의 UI(`TextMeshPro`)를 제어할 수 있도록 함.
+- **순위에 따른 시각적 처리**:
+  - `RankItem.cs`: 등수가 3등 이내일 경우 등수 텍스트(`textRank`) 색상을 금색으로, 4등 이상은 회색으로 변경하여 상위 랭커를 시각적으로 구분함.
+  - `LeagueManager.cs`: 특정 순위(7등)를 '나'로 가정하고, 해당 아이템의 배경 `Image` 색상을 연두색으로 변경하여 현재 플레이어의 위치를 강조하는 기능 구현.
+
+### 🎨 UI 및 연출 (UI & Visuals)
+- **랭킹 아이템 Prefab 활용**: `Item_Rank.prefab`을 리더보드의 기본 단위로 사용.
+  - `LeagueManager`가 `ScrollView`의 `contentArea`에 `Item_Rank` 인스턴스들을 동적으로 채워넣는 구조로 UI를 구성함. 이는 `Vertical Layout Group`과 함께 사용될 것을 상정함.
+
+### 🐛 이슈 해결 (Troubleshooting)
+- **'나'의 순위 강조 로직의 의존성 문제**: `LeagueManager`의 하이라이트 기능은 `Item_Rank.prefab`의 최상위 루트에 `Image` 컴포넌트가 존재해야만 정상 작동함. `Hierarchy` 구조 변경 시 주의가 필요함을 인지함.
