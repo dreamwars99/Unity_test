@@ -63,3 +63,48 @@
 
 ### 🐛 이슈 해결 (Troubleshooting)
 - **'나'의 순위 강조 로직의 의존성 문제**: `LeagueManager`의 하이라이트 기능은 `Item_Rank.prefab`의 최상위 루트에 `Image` 컴포넌트가 존재해야만 정상 작동함. `Hierarchy` 구조 변경 시 주의가 필요함을 인지함.
+
+## [2025.12.08] (월)
+
+### 🎯 오늘의 목표 (Daily Goal)
+- UI 연출 강화: 씬 전환 시 가짜 로딩과 특정 이벤트용 콘페티(폭죽) 효과 구현.
+
+### 💻 스크립트 로직 (Scripting & Logic)
+- **`SceneConnector.cs` 추가**: 씬 전환 시 부드러운 사용자 경험을 위한 가짜 로딩 화면을 구현함.
+  - `GoToMainScene()` 함수가 호출되면 `ProcessFakeLoading()` 코루틴을 실행.
+  - 코루틴은 `loadingPanel`을 활성화해 로딩 애니메이션을 보여주고, `yield return new WaitForSeconds(1f)`로 1초간 대기 후 `SceneManager.LoadScene("DuoMain")`으로 실제 씬을 로드함.
+- **`ConfettiEffect.cs` 추가**: 퀘스트 완료 등 특정 이벤트에 사용할 콘페티(폭죽) 효과를 제어함.
+  - `Fire()` 함수를 통해 `ProcessConfetti()` 코루틴을 실행.
+  - 코루틴은 `confettiPanel`을 2초간 활성화했다가 비활성화하는 방식으로, `OnEnable` 시 자동 재생되는 애니메이션을 제어하고 리소스를 자동 정리함.
+
+### 🎨 UI 및 연출 (UI & Visuals)
+- **가짜 로딩 연출**: `SceneConnector`와 연동될 `loadingPanel` 오브젝트를 `Hierarchy`에 구성. 내부에 로딩 애니메이션(예: Lottie)을 포함하여 씬 전환 동안 시각적 피드백을 제공함.
+- **콘페티 효과 연출**: `ConfettiEffect`와 연동될 `confettiPanel` 오브젝트를 `Hierarchy`에 구성. 파티클 시스템 또는 프레임 애니메이션을 배치하여 이벤트 성공 시 축하 효과를 보여줌.
+
+### 🐛 이슈 해결 (Troubleshooting)
+- 특이사항 없음.
+
+## [2025.12.10] (수)
+
+### 🎯 오늘의 목표 (Daily Goal)
+- 탭 전환 시 Lottie 애니메이션 대량 생성을 통한 앱 스트레스 테스트 및 최적화 가능성 점검.
+
+### 💻 스크립트 로직 (Scripting & Logic)
+- **Lottie 스폰(spawn) 시스템 구현**: `LottieSpawner.cs` 작성.
+  - `SpawnLottie()` 함수를 통해 지정된 `lottieAnimation` 프리팹을 `spawnParent` 내부에 대량으로 생성.
+  - 생성된 각 인스턴스의 `LottieAnimationView` 컴포넌트에 `lottieFile`을 할당하고, `Load()` 및 `Play()`를 호출하여 즉시 재생되도록 구현함.
+- **테스트용 이벤트 전달 시스템**: `LottieTransmitter.cs` 작성.
+  - 유니티 에디터에서 버튼 클릭 시 `OnSpawnLottie` 이벤트를 호출.
+  - `UnityEvent`를 사용하여 `LottieSpawner`의 `SpawnLottie()` 함수와 에디터상에서 연결. 이로써 코드 수정 없이 테스트를 수행할 수 있는 구조를 마련함.
+
+### 🎨 UI 및 연출 (UI & Visuals)
+- **Lottie 프리팹 준비**: `Anim_Lego.prefab`을 테스트용 Lottie 애니메이션 프리팹으로 사용.
+  - 내부에 `LottieAnimationView` 컴포넌트가 포함되어 있으며, `Play On Enable`은 비활성화하여 스크립트로 재생을 제어하도록 설정함.
+- **UI 구성**:
+  - `LottieTransmitter`가 포함된 테스트용 버튼을 씬에 배치.
+  - `LottieSpawner`의 `spawnParent`로 `GridLayoutGroup`이 적용된 `GameObject`를 연결하여, 생성된 Lottie 애니메이션들이 격자 형태로 자동 정렬되도록 구성.
+
+### 🐛 이슈 해결 (Troubleshooting)
+- **과도한 생성으로 인한 앱 프리징(Freezing)**:
+  - 초기 테스트에서 한 번에 100개 이상의 Lottie 파일을 생성하자 UI 스레드가 멈추는 현상 발생.
+  - 이는 `Instantiate`와 `Load`가 동기적으로 처리되어 프레임 드랍을 유발하기 때문으로 분석됨. 향후 코루틴을 사용한 순차적 생성 또는 오브젝트 풀링(Object Pooling) 도입의 필요성을 확인함.

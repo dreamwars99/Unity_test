@@ -9,6 +9,10 @@ public class MapGenerator : MonoBehaviour
     public Transform contentParent;  // ScrollView의 Content
     public int totalUnits = 20;      // 생성할 개수
     
+    [Header("Scroll Settings (New!)")]
+    public float rowHeight = 200f;   // 버튼 하나당 높이 (간격 포함, 적당히 조절)
+    public float bottomPadding = 500f; // 맨 아래 여유 공간
+
     [Header("Zigzag Layout")]
     public float xAmplitude = 200f;  // 좌우 너비
     public float frequency = 0.5f;   // 굴곡 빈도
@@ -37,8 +41,7 @@ public class MapGenerator : MonoBehaviour
             {
                 GameObject childObj = contentParent.GetChild(i).gameObject;
 
-                // 💡 [수정됨] 이름에 "Row_Unit"이 포함된 녀석만 지운다!
-                // 즉, "Deco_Character"나 다른 장식물은 살려둠.
+                // 💡 이름에 "Row_Unit"이 포함된 녀석만 지운다!
                 if (childObj.name.Contains("Row_Unit"))
                 {
                     DestroyImmediate(childObj);
@@ -51,6 +54,21 @@ public class MapGenerator : MonoBehaviour
         {
             SpawnUnitButton(i);
         }
+
+        // 3. [추가됨] 스크롤 영역(Content) 높이 강제 늘리기
+        UpdateContentHeight();
+    }
+
+    // 🔥 핵심: 버튼 개수에 맞춰서 스크롤 길이를 늘려주는 함수
+    void UpdateContentHeight()
+    {
+        RectTransform contentRect = contentParent.GetComponent<RectTransform>();
+        
+        // 공식: (버튼 개수 * 버튼 하나 높이) + 여유 공간
+        float finalHeight = (totalUnits * rowHeight) + bottomPadding;
+        
+        // Content의 높이를 적용
+        contentRect.sizeDelta = new Vector2(contentRect.sizeDelta.x, finalHeight);
     }
 
     void SpawnUnitButton(int index)
@@ -80,7 +98,6 @@ public class MapGenerator : MonoBehaviour
             if (index == 0)
             {
                 // [Case A] 현재 학습 중 (0번)
-                // 색상: 핑크
                 mainImage.color = activeColor;
 
                 // 이미지: 리스트의 0번 (별)
@@ -90,7 +107,6 @@ public class MapGenerator : MonoBehaviour
             else
             {
                 // [Case B] 잠김 (나머지)
-                // 색상: 회색
                 mainImage.color = lockedColor;
 
                 // 이미지: 리스트의 1번부터 순환 (별 제외)
@@ -101,11 +117,6 @@ public class MapGenerator : MonoBehaviour
                     mainImage.sprite = iconList[cycleIndex];
                 }
             }
-        }
-        else
-        {
-            // Img_Main을 못 찾았을 때 에러 로그
-            Debug.LogError($"🚨 '{newRow.name}' 구조 확인 필요: 자식 오브젝트 중 'Img_Main'을 찾을 수 없습니다.");
         }
     }
 }
