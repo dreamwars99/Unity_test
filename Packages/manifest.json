@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "com.gilzoide.lottie-player": "https://github.com/gilzoide/unity-lottie-player.git",
+    "com.thorvg.unity": "https://github.com/thorvg/thorvg.unity.git?path=/package",
+    "com.unity.2d.sprite": "1.0.0",
     "com.unity.burst": "1.8.21",
     "com.unity.collab-proxy": "2.10.2",
     "com.unity.collections": "1.2.4",

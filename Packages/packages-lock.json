@@ -1,11 +1,17 @@
 {
   "dependencies": {
-    "com.gilzoide.lottie-player": {
-      "version": "https://github.com/gilzoide/unity-lottie-player.git",
+    "com.thorvg.unity": {
+      "version": "https://github.com/thorvg/thorvg.unity.git?path=/package",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "7712746ef9225bfb62d61adefa992a4ee322cc93"
+      "hash": "34e650a9997c71b0b53cb0d638fefdff929841a4"
+    },
+    "com.unity.2d.sprite": {
+      "version": "1.0.0",
+      "depth": 0,
+      "source": "builtin",
+      "dependencies": {}
     },
     "com.unity.burst": {
       "version": "1.8.21",
