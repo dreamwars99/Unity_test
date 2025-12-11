@@ -1,3 +1,22 @@
+## [2025.12.11] (목) [2차]
+
+### 🎯 오늘의 목표 (Daily Goal)
+- ThorVG 렌더링 엔진의 결과를 Unity UI(`RawImage`)에 실시간으로 표시하는 기능 구현.
+
+### 💻 스크립트 로직 (Scripting & Logic)
+- **`TvgToRawImage.cs` 스크립트 신규 추가**:
+  - `MeshRenderer`에서 렌더링된 `Texture`를 `RawImage` UI 컴포넌트로 실시간 복사하는 로직을 구현함.
+  - `Start()`에서 `targetUI` (`RawImage`)와 `thorEngine` (`MeshRenderer`) 컴포넌트를 자동으로 탐색하여 할당.
+  - `Update()`에서 `thorEngine`의 `sharedMaterial.mainTexture`를 지속적으로 확인하여 `targetUI.texture`에 연결함.
+  - 3D 씬에서는 렌더링 소스가 보이지 않도록 `thorEngine.enabled = false`로 설정하여, UI 전용 렌더링 파이프라인으로 작동하도록 함.
+
+### 🎨 UI 및 연출 (UI & Visuals)
+- `TvgToRawImage` 컴포넌트를 통해, 보이지 않는 3D 객체의 렌더링 결과를 UI에 표시할 수 있는 기반을 마련함.
+- 이 기능을 활용할 `RawImage` UI 요소가 `Hierarchy` 상에 준비되어야 함.
+
+### 🐛 이슈 해결 (Troubleshooting)
+- 해당 사항 없음.
+
 ## 2025년 12월 11일 [1차]
 
 ### 🎯 오늘의 목표 (Daily Goal)
