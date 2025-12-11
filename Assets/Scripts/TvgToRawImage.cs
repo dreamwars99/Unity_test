@@ -25,17 +25,23 @@ public class TvgToRawImage : MonoBehaviour
 
     void Update()
     {
-        // 3. 엔진에서 텍스처(Texture2D)를 훔쳐와서 UI에 꽂아넣기
+        // 3. 엔진 체크
         if (thorEngine != null && targetUI != null)
         {
-            // ThorVG가 Mesh의 재질(Material)에 그림을 그리고 있음.
+            // [수정된 부분] 안전장치 추가!
+            // 불량 파일 때문에 재질(Material)이 아예 안 만들어졌을 경우를 대비함.
+            if (thorEngine.sharedMaterial == null) 
+            {
+                return; // 재질 없으면 아무것도 하지 말고 리턴 (에러 방지)
+            }
+
+            // 이제 안전하게 접근 가능
             Texture renderedTexture = thorEngine.sharedMaterial.mainTexture;
 
-            // UI에 그 텍스처가 적용 안 되어 있다면 적용.
+            // UI 적용
             if (renderedTexture != null && targetUI.texture != renderedTexture)
             {
                 targetUI.texture = renderedTexture;
-                Debug.Log($"[ThorVG Integrated] Texture Size: {renderedTexture.width}x{renderedTexture.height}");
             }
         }
     }
