@@ -9,6 +9,9 @@ public class LottieFilterFix : MonoBehaviour
 
     void Start()
     {
+        // 야, 제한 두지 말고 달릴 수 있는 만큼 달려봐!
+        Application.targetFrameRate = 60; 
+
         // 1. 내 몸에 붙은 RawImage 컴포넌트를 찾는다.
         _rawImage = GetComponent<RawImage>();
     }
