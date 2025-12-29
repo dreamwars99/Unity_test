@@ -1,5 +1,19 @@
 {
   "dependencies": {
+    "app.rive.rive-unity": {
+      "version": "https://github.com/rive-app/rive-unity.git?path=package#v0.3.8",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "b75674e95ffe033064106ef178c9098ccba7a20a"
+    },
+    "com.gilzoide.lottie-player": {
+      "version": "https://github.com/gilzoide/unity-lottie-player.git#1.1.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "cf9e97e489772a7597605457e086e53fcd4a2941"
+    },
     "com.manakhovn.figma_to_unity_importer": {
       "version": "https://github.com/ManakhovN/FigmaToUnityImporter.git?path=/Assets/FigmaImporter",
       "depth": 0,
@@ -8,6 +22,16 @@
         "com.unity.textmeshpro": "2.1.4"
       },
       "hash": "bf459df7cb1cbdb060938cea0b61cbbf8f016451"
+    },
+    "com.simonoliver.unityfigma": {
+      "version": "https://github.com/simonoliver/UnityFigmaBridge.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "2.0.1-preview.1",
+        "com.unity.textmeshpro": "2.0.1"
+      },
+      "hash": "9bc41a73c7eb7617f5cf4e4975330842da922f56"
     },
     "com.thorvg.unity": {
       "version": "https://github.com/thorvg/thorvg.unity.git?path=/package",
@@ -105,6 +129,13 @@
     "com.unity.mathematics": {
       "version": "1.2.6",
       "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.nuget.newtonsoft-json": {
+      "version": "3.2.1",
+      "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"

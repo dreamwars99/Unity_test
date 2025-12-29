@@ -15,9 +15,9 @@ EditorBuildSettings:
     path: Assets/Scenes/DuoStart.unity
     guid: 9cc7d61d6489bb140b91e8fa0dc08356
   - enabled: 1
-    path: Assets/Scenes/OnBoarding.unity
-    guid: a7945619dbe6119489050c248669686f
-  - enabled: 1
     path: Assets/Scenes/DuoMain.unity
     guid: 21fbdd06db8aaec45a33861ce43564b4
+  - enabled: 1
+    path: Assets/Scenes/OnBoarding.unity
+    guid: a7945619dbe6119489050c248669686f
   m_configObjects: {}

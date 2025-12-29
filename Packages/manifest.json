@@ -1,6 +1,9 @@
 {
   "dependencies": {
+    "app.rive.rive-unity": "https://github.com/rive-app/rive-unity.git?path=package#v0.3.8",
+    "com.gilzoide.lottie-player": "https://github.com/gilzoide/unity-lottie-player.git#1.1.0",
     "com.manakhovn.figma_to_unity_importer": "https://github.com/ManakhovN/FigmaToUnityImporter.git?path=/Assets/FigmaImporter",
+    "com.simonoliver.unityfigma": "https://github.com/simonoliver/UnityFigmaBridge.git",
     "com.thorvg.unity": "https://github.com/thorvg/thorvg.unity.git?path=/package",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.burst": "1.8.21",

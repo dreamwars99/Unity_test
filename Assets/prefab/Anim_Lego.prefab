@@ -68,6 +68,6 @@ MonoBehaviour:
   _animationAsset: {fileID: -6750239444755058063, guid: 64ecdf0c42b829049be15c30a0ead5dc, type: 3}
   _autoPlay: 1
   _loop: 1
-  _width: 512
-  _height: 512
+  _width: 1024
+  _height: 1024
   _keepAspect: 1
