@@ -1,3 +1,42 @@
+## [2025.12.29] (월) [2차] - 화면 내비게이션 및 스크롤 구현
+
+### 🎯 오늘의 목표 (Daily Goal)
+- 버튼 클릭을 통한 화면 전환(Navigation) 기능 및 피드 콘텐츠의 스크롤 기능 구현.
+
+### 💻 스크립트 로직 (Scripting & Logic)
+- **`PageNavigator.cs` 스크립트 신규 추가**:
+  - `targetScreen`과 `currentScreen` 변수를 `public`으로 선언하여 인스펙터에서 제어할 패널을 할당 가능하게 함.
+  - `GoToPage()` 함수: `currentScreen`을 비활성화하고 `targetScreen`을 활성화하여 화면 전환을 처리.
+  - `GoBack()` 함수: 현재 오브젝트(`gameObject`)를 비활성화하여 팝업이나 서브 화면을 닫는 기능 구현.
+
+### 🎨 UI 및 연출 (UI & Visuals)
+- **버튼 내비게이션 연결**:
+  - 주요 UI 버튼에 `PageNavigator` 컴포넌트를 추가하고 `OnClick` 이벤트에 `GoToPage()` 함수를 연결하여 화면 간 이동이 가능하도록 설정함.
+- **스크롤 뷰 구현**:
+  - `Feed_ScrollContent` 오브젝트에 `ScrollRect` 컴포넌트를 추가하여, 콘텐츠가 화면을 벗어날 경우 터치 스크롤이 가능하도록 구현함.
+
+### 🐛 이슈 해결 (Troubleshooting)
+- 특이사항 없음.
+
+## [2025.12.29] (월) [1차] - 피그마 디자인 임포트
+
+### 🎯 오늘의 목표 (Daily Goal)
+- Figma로 제작된 모바일 앱 디자인 전체를 Unity 프로젝트로 임포트하여 UI 기반 구축.
+
+### 💻 스크립트 로직 (Scripting & Logic)
+- **`UnityFigmaBridge` 플러그인 활용**:
+  - [UnityFigmaBridge](https://github.com/simonoliver/UnityFigmaBridge) 라이브러리를 프로젝트에 도입하여 Figma 데이터 연동 환경을 구축함.
+  - 플러그인의 기능을 활용하여 Figma의 데이터 구조를 Unity의 UI 시스템으로 변환하는 작업을 수행함.
+
+### 🎨 UI 및 연출 (UI & Visuals)
+- **전체 앱 디자인 임포트 완료**:
+  - [Figma Prototyping Kit](https://www.figma.com/design/RPmavLkRUOOIqZA3bfIHCj/Mobile-Apps-%E2%80%93-Prototyping-Kit--Community-?node-id=283-5892&t=onZM6b5Sz6xHizOc-0)에 포함된 모든 스크린과 UI 컴포넌트를 유니티 씬으로 가져옴.
+  - Figma의 프레임과 레이어가 Unity의 `Canvas`, `Panel`, `Image`, `Text` 등으로 자동 변환되어 `Hierarchy`에 배치됨.
+  - 디자인 원본의 레이아웃과 스타일을 유지하며 유니티 환경으로 이식 완료.
+
+### 🐛 이슈 해결 (Troubleshooting)
+- 특이사항 없음.
+
 ## [2025.12.12] (금) [2차] - Lottie 애니메이션 프레임 제한 해제
 
 ### 🎯 오늘의 목표 (Daily Goal)

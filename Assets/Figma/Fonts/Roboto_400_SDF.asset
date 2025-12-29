@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: Roboto_400_SDF
   m_EditorClassIdentifier: 
-  hashCode: 0
+  hashCode: 794451406
   material: {fileID: 509110229377539459}
-  materialHashCode: -2006316128
+  materialHashCode: 1261366062
   m_Version: 1.1.0
   m_SourceFontFileGUID: 4d88f515bbb9af94e8aba612357fef68
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: 4d88f515bbb9af94e8aba612357fef68, type: 3}
@@ -2770,9 +2770,9 @@ Material:
     - _OutlineSoftness: 0
     - _OutlineWidth: 0
     - _PerspectiveFilter: 0.875
-    - _ScaleRatioA: 1
+    - _ScaleRatioA: 0.9
     - _ScaleRatioB: 1
-    - _ScaleRatioC: 1
+    - _ScaleRatioC: 0.73125
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
