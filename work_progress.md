@@ -1,3 +1,29 @@
+
+
+## [2026.01.05] (월) [1차] - 유니티 미니게임 1호: Super Gem Clicker 개발
+
+### 🎯 오늘의 목표 (Daily Goal)
+- 유니티 기초 UI 학습 및 첫 번째 미니게임 'Super Gem Clicker' (방치형 클릭커) MVP 개발 완료.
+- 게임 오브젝트 구조화 및 로컬 데이터 저장 구현.
+
+### 🎮 게임 설명 (Game Description)
+- 화면 중앙의 타겟을 반복 클릭하여 재화(Gem)를 획득하고, 모은 재화로 클릭 효율을 업그레이드하며 로컬 데이터에 저장된 최고 기록(High Score)에 도전하는 단순 중독성 클리커 게임.
+
+### 💻 스크립트 로직 & 구조 (Scripting & Logic)
+- **`ClickerGame.cs` 스크립트 구현**:
+  - **Core Logic**: 버튼 클릭 시 점수(`score`) 증가, 텍스트 UI 실시간 갱신.
+  - **Upgrade System**: 재화 소비를 통한 클릭 효율(`clickPower`) 증가 및 비용(`upgradeCost`) 증가 알고리즘 적용.
+  - **Data Persistence**: `PlayerPrefs`를 활용하여 앱 재실행 시에도 최고 기록(`HighScore`)이 유지되도록 구현.
+
+- **UI/UX 구조 (Hierarchy)**:
+  - `Panel_Super` 하위에 `Game_GemClicker` 컨테이너를 생성하여 게임 단위로 모듈화.
+  - `TextMeshPro`를 사용하여 가독성 높은 UI 구성.
+
+### 📂 파일 구조 변경
+- `Assets/_Scripts/ClickerGame.cs` 생성.
+- Hierarchy: `Panel_Super` > `Game_GemClicker` (Toggle 가능하도록 그룹화).
+
+
 ## [2025.12.29] (월) [2차] - 화면 내비게이션 및 스크롤 구현
 
 ### 🎯 오늘의 목표 (Daily Goal)
