@@ -1,4 +1,39 @@
 
+
+## [2026.01.06] (화) [2차] - 유니티 미니게임 4호: Fly Jump 개발
+
+### 🎯 오늘의 목표 (Daily Goal)
+- 중력 가속도(Gravity)와 점프(Velocity) 물리를 코드로 구현한 'Flappy Bird' 스타일 게임 개발.
+- 점수에 따라 게임 속도와 장애물 생성 패턴이 변화하는 '동적 난이도 시스템' 구축.
+
+### 🎮 게임 설명 (Game Description)
+- 중력에 의해 떨어지는 캐릭터를 터치하여 점프시키고, 다가오는 파이프 사이의 구멍을 통과하는 게임.
+- **Dynamic Difficulty**: 점수가 오를수록 파이프 이동 속도가 빨라지고, 생성 간격이 불규칙하게 줄어들어 긴장감을 유발함.
+
+### 💻 스크립트 로직 & 구조 (Detailed Logic)
+- **`FlyManager.cs` (Central Control)**:
+  - **Global Speed**: `currentPipeSpeed` 변수를 통해 게임 전체의 속도를 중앙에서 관리. 점수 획득 시 속도를 점진적으로 증가(Max 1000).
+  - **Position Fix**: 게임 재시작 시 플레이어 위치를 `-550`으로 강제 초기화하여 안정적인 시작 지점 확보.
+  - **UI & State**: 점수, 최고 기록(Key: `FlyBest`), 게임 오버 팝업 관리.
+
+- **`FlyPlayer.cs` (Physics)**:
+  - **Custom Gravity**: Unity Rigidbody 대신 `velocity -= gravity * Time.deltaTime` 공식을 사용하여 UI 환경에 최적화된 물리 움직임 구현.
+  - **Boundaries**: 화면 상단/하단 이탈 시 사망 처리.
+
+- **`FlyPipe.cs` (Obstacle)**:
+  - **Synced Movement**: 자체 속도 대신 `FlyManager`의 속도 변수를 참조하여 이동(동기화).
+  - **Math Collision**: Collider 컴포넌트 없이 `Mathf.Abs`를 활용하여 가로/세로 거리 차이로 충돌 및 통과(점수) 여부 정밀 판정.
+  - **Tuning**: 플레이어의 통과 난이도를 고려하여 충돌 판정 범위를 `250`으로 미세 조정.
+
+- **`FlySpawner.cs` (Pattern)**:
+  - **Irregular Interval**: `기본 간격 - (점수 비례 감소) + 랜덤 딜레이` 공식을 적용하여, 예측 불가능한 엇박자 생성 패턴 구현.
+  - **Random Position**: 생성 시 Y축 좌표를 랜덤으로 변경하여 구멍 위치 다양화.
+
+### 📂 파일 구조 및 변경 사항
+- **New Scripts**: `FlyPlayer.cs`, `FlyPipe.cs`, `FlySpawner.cs`, `FlyManager.cs`
+- **Prefabs**: `PipeSet` (Top/Bottom 파이프를 하나의 세트로 묶고, 길이를 2000으로 늘려 화면 공백 제거).
+- **Hierarchy**: `Game_FlyJump` 그룹 생성 및 기존 UI 구조(`Fly_UI`) 재사용.
+
 ## [2026.01.06] (화) [1차] - 유니티 미니게임 3호: Tower Stacker 개발
 
 ### 🎯 오늘의 목표 (Daily Goal)
