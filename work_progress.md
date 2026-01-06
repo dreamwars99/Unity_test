@@ -1,4 +1,30 @@
 
+## [2026.01.06] (화) [1차] - 유니티 미니게임 3호: Tower Stacker 개발
+
+### 🎯 오늘의 목표 (Daily Goal)
+- `Mathf.PingPong`을 활용한 자동 이동 로직과 정밀한 좌표 판정 시스템을 갖춘 'Tower Stacker' 개발.
+- UI와 게임 오브젝트의 계층(Hierarchy) 분리를 통해 화면 스크롤 시 UI가 고정되도록 구조 개선.
+
+### 🎮 게임 설명 (Game Description)
+- 좌우로 자동 왕복하는 블록을 타이밍에 맞춰 클릭하여 정지시키고, 이전 블록 위에 정확히 쌓아 올리는 피지컬 게임. 층수가 높아질수록 블록이 작아지고 속도가 빨라지며, 15층 이상 쌓으면 화면이 아래로 스크롤됨.
+
+### 💻 스크립트 로직 & 구조 (Scripting & Logic)
+- **`TowerBlock.cs`**:
+  - `Mathf.PingPong` 함수를 사용하여 별도의 방향 전환 조건문(if) 없이 부드러운 왕복 이동 구현.
+  - `Init()` 함수를 통해 생성 시 매니저로부터 속도, 크기, 색상 정보를 주입받도록 설계.
+- **`TowerManager.cs`**:
+  - **Core Loop**: 블록 생성 -> 정지 -> 판정 -> 다음 레벨(스크롤/난이도 상승) -> 재생성.
+  - **Judgment Logic**: `Mathf.Abs(현재X - 이전X)`를 계산하여 블록 너비를 벗어나면 Game Over 처리.
+  - **Scrolling**: 점수가 15점 이상일 때 `Container`의 Y좌표를 이동시켜 탑이 계속 쌓이는 시각적 효과 구현.
+
+### 📂 파일 구조 및 변경 사항
+- **New Scripts**: `TowerBlock.cs`, `TowerManager.cs`
+- **Prefabs**: `Block` (TowerBlock 스크립트 포함)
+- **Hierarchy 구조 개선**:
+  - `Game_TowerStack` (Root)
+    ├── `Tower_MovingArea` (블록이 쌓이고 움직이는 영역)
+    └── `Tower_UI` (점수판 등 고정된 UI 영역)
+
 
 ## [2026.01.05] (월) [2차] - 유니티 미니게임 2호: Dodge Rain 개발
 
