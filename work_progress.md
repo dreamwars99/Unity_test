@@ -1,4 +1,37 @@
 
+## [2026.01.06] (화) [4차] - 통합 로비 시스템 (Arcade Lobby) 구축
+
+### 🎯 오늘의 목표 (Daily Goal)
+- 개발된 5종의 미니게임을 하나의 앱에서 선택하여 실행할 수 있는 '통합 런처(Launcher)' 시스템 구현.
+- 씬(Scene) 전환 없이 `SetActive`를 활용한 가벼운 화면 전환 내비게이션 구조 설계.
+
+### 🎮 시스템 설명 (System Description)
+- 앱 실행 시 가장 먼저 표시되는 메인 메뉴 화면.
+- **Game Selector**: 5개의 미니게임(Clicker, Dodge, Tower, Fly, Stopwatch)을 버튼 클릭 한 번으로 진입 가능.
+- **Navigation**: 어떤 게임을 플레이하든 상단의 '홈(Home) 버튼'을 통해 즉시 로비로 복귀 가능.
+
+### 💻 스크립트 로직 & 구조 (Scripting & Logic)
+- **`LobbyManager.cs`**:
+  - **Game Management**: `GameObject[] games` 배열을 사용하여 5개의 게임 컨테이너를 인덱스(`0~4`)로 관리.
+  - **Switching Logic**:
+    - `OpenGame(int index)`: 선택된 인덱스의 게임 오브젝트만 `SetActive(true)`로 활성화하고, 나머지와 로비는 비활성화.
+    - `GoToLobby()`: 실행 중인 모든 게임을 비활성화하고, 메인 로비 패널만 다시 활성화.
+  - **State Reset**: 로비 복귀 시 `Time.timeScale = 1.0f`을 호출하여, 일시정지(Game Over) 상태였던 게임의 시간 설정을 정상화.
+
+### 📂 파일 구조 및 변경 사항
+- **New Scripts**: `LobbyManager.cs`
+- **UI Components**:
+  - `Grid Layout Group`: 버튼 5개를 균일한 간격으로 자동 정렬하기 위해 사용.
+- **Hierarchy 구조 변경 (Final Structure)**:
+  - `Panel_Super`
+    ├── `Lobby_Main` (메인 메뉴 패널)
+    ├── `Btn_BackToLobby` (전역 뒤로가기 버튼)
+    ├── `Game_GemClicker`
+    ├── `Game_DodgeRain`
+    ├── `Game_TowerStack`
+    ├── `Game_FlyJump`
+    └── `Game_Stopwatch`
+
 ## [2026.01.06] (화) [3차] - 유니티 미니게임 5호: Just 10 Seconds 개발
 
 ### 🎯 오늘의 목표 (Daily Goal)
