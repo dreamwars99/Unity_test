@@ -1,4 +1,32 @@
 
+## [2026.01.06] (화) [3차] - 유니티 미니게임 5호: Just 10 Seconds 개발
+
+### 🎯 오늘의 목표 (Daily Goal)
+- `Time.deltaTime`을 활용한 정밀 시간 측정 로직과 `Mathf.Abs`를 이용한 오차 범위 판정 시스템 구현.
+- 게임의 상태(Menu/In-Game)를 UI 그룹(`Group`) 단위로 관리하는 UI 구조 설계.
+
+### 🎮 게임 설명 (Game Description)
+- 흐르는 시간을 보며 정확히 **10.00초**에 버튼을 눌러 멈추는 타이밍 게임.
+- **Normal Mode**: 숫자를 끝까지 보여주는 연습 모드.
+- **Blind Mode**: 3초 이후 숫자를 가리고 오직 감각에 의존해야 하는 실전 모드. (작동 중임을 알리기 위해 숫자가 랜덤으로 뒤섞이는 시각적 연출 포함).
+
+### 💻 스크립트 로직 & 구조 (Detailed Logic)
+- **`StopwatchGame.cs`**:
+  - **Time Management**: `Update` 문에서 `currentTime += Time.deltaTime`으로 시간을 누적 계산. `ToString("F2")`를 사용하여 소수점 2자리까지 UI 표시.
+  - **Blind Effect**: 블라인드 모드 활성화 시, 3초 경과 후 `Random.Range`를 이용해 숫자를 무작위로 셔플(Shuffle)하여, 시간은 흐르고 있음을 시각적으로 피드백.
+  - **Victory Condition**: `Mathf.Abs(currentTime - targetTime) <= tolerance(0.05f)` 공식을 사용하여, 목표 시간과의 오차가 0.05초 이내일 경우 성공 판정.
+  - **UI State Machine**:
+    - **Menu State**: 모드 선택 버튼(`Btn_Normal`, `Btn_Blind`) 활성화.
+    - **Game State**: 타이머 및 액션 버튼 활성화.
+    - **Action Logic**: 하나의 버튼으로 `Start` -> `Stop` -> `Result/Reset`의 3단계 상태를 순환 처리.
+
+### 📂 파일 구조 및 변경 사항
+- **New Scripts**: `StopwatchGame.cs`
+- **Hierarchy 구조 개선 (UI Grouping)**:
+  - `Game_Stopwatch` (Root)
+    ├── `Group_Menu` (모드 선택 화면: Normal / Blind)
+    └── `Group_Game` (게임 플레이 화면: Timer / Result / Action Button)
+
 
 ## [2026.01.06] (화) [2차] - 유니티 미니게임 4호: Fly Jump 개발
 
