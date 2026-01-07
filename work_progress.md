@@ -1,4 +1,39 @@
 
+## [2026.01.07] (수) [2차] - 유니티 미니게임 7호: Whack-A-Mole 개발
+
+### 🎯 오늘의 목표 (Daily Goal)
+- `Grid Layout Group`을 활용한 3x3 두더지 구멍 배치 및 UI 구조화.
+- `Coroutine`을 사용한 랜덤 생성 로직과 스테이지별 난이도 상승(Speed Up) 시스템 구현.
+
+### 🎮 게임 설명 (Game Description)
+- **Whack-A-Mole (두더지 잡기)**: 9개의 구멍에서 무작위로 튀어나오는 두더지를 제한 시간 내에 클릭하여 점수를 얻는 아케이드 게임.
+- **Stage System**: 게임 오버 후 'Retry' 시 다음 스테이지로 진입하며, 스테이지가 오를수록 두더지가 튀어나오는 속도가 `0.1초`씩 빨라짐 (최소 `0.2초`까지).
+- **Score Multiplier**: 높은 스테이지일수록 두더지 한 마리당 획득 점수가 증가함 (1단계=1배, 5단계=5배).
+
+### 💻 스크립트 로직 & 구조 (Detailed Logic)
+- **`MoleManager.cs`**:
+  - **Spawn Logic**: `StartCoroutine`과 `Random.Range(0, 9)`를 사용하여 두더지를 랜덤한 위치에서 소환. 중복 위치 방지 로직 포함.
+  - **Dynamic Difficulty**: `Mathf.Max(0.2f, baseSpawnInterval - ((currentStage - 1) * 0.1f))` 공식을 통해 스테이지별로 생성 주기를 단축.
+  - **Score System**: `AddScore` 함수에서 `baseScore * currentStage`를 계산하여 고득점 플레이 유도.
+  - **UI Management**: 점수, 남은 시간, 스테이지 표시 및 최고 점수(`PlayerPrefs`) 저장/로드 처리.
+
+### 📂 파일 구조 및 변경 사항 (Hierarchy & Files)
+- **New Script**: `MoleManager.cs`, `Mole.cs` (개별 두더지 제어용)
+- **Updated Hierarchy (Game_WhackAMole 구조)**:
+  - `Game_WhackAMole` (Root)
+    ├── `MoleManager` (MoleManager 스크립트 부착 / 오디오 소스 등 관리)
+    ├── `Grid_Moles` (Grid Layout Group: 3x3 배치)
+    │    ├── `Mole_0` ~ `Mole_8` (각각 Mole 컴포넌트 및 Button 포함)
+    ├── `Txt_Time` (남은 시간 표시)
+    ├── `Txt_Stage` (현재 스테이지 표시)
+    ├── `Score_UI` (Prefab)
+    │    ├── `Txt_HighScore`
+    │    └── `Txt_Score`
+    └── `Popup_GameOver` (Prefab)
+         ├── `Txt_GameOver`
+         ├── `Txt_FinalScore` (다음 스테이지 예고 포함)
+         └── `Btn_Retry` (클릭 시 Next Stage 진행)
+
 ## [2026.01.07] (수) [1차] - 유니티 미니게임 6호: Arrow Beat 개발
 
 ### 🎯 오늘의 목표 (Daily Goal)
