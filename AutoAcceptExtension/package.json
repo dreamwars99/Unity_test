@@ -1,0 +1,44 @@
+{
+  "name": "auto-accept-inline",
+  "displayName": "Auto Accept Inline Suggestions",
+  "description": "Automatically accepts inline code suggestions (like Copilot) after a delay.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "autoAccept.toggle",
+        "title": "Auto Accept: Toggle ON/OFF"
+      }
+    ],
+    "configuration": {
+      "title": "Auto Accept",
+      "properties": {
+        "autoAccept.delay": {
+          "type": "number",
+          "default": 600,
+          "description": "Delay in milliseconds before auto-accepting suggestions after stopping typing."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^18.0.0",
+    "typescript": "^5.3.0"
+  }
+}

@@ -1,4 +1,34 @@
 
+## [2026.01.07] (수) [3차] - 유니티 미니게임 8호: Classic Snake 개발
+
+### 🎯 오늘의 목표 (Daily Goal)
+- `List<RectTransform>` 자료구조를 활용하여 뱀의 꼬리가 늘어나고 따라오는 알고리즘 구현.
+- UI 좌표계(`AnchoredPosition`)를 기반으로 한 그리드(격자) 이동 시스템 구축.
+
+### 🎮 게임 설명 (Game Description)
+- **Classic Snake (스네이크)**: 방향키로 뱀을 조종하여 사과를 먹고 몸을 늘리는 고전 게임.
+- **Grid Movement**: 뱀은 정해진 간격(Tick)마다 한 칸씩 이동하며, 사과를 먹으면 꼬리가 생성되어 뒤따라옴.
+- **Game Over**: 벽(화면 밖)에 부딪히거나, 길어진 자기 자신의 몸통에 부딪히면 종료.
+
+### 💻 스크립트 로직 & 구조 (Detailed Logic)
+- **`SnakeGame.cs`**:
+  - **Data Structure**: `List<RectTransform> snakeBody`를 사용하여 뱀의 머리와 몸통 객체들을 순서대로 관리 (파이썬의 List와 유사).
+  - **Movement Algorithm**: 이동 시 가장 뒤에 있는 꼬리부터 앞쪽 꼬리의 위치로 좌표를 덮어씌우는 방식으로 '따라가는' 움직임 구현 (`for`문 역순 순회).
+  - **Input Safety**: `hasMovedThisTick` 변수를 두어, 한 번의 이동 틱(Tick) 내에 방향을 두 번 바꿔서 자기 목을 조르는(180도 회전) 버그 방지.
+  - **Collision**: `Vector2.Distance`를 사용하여 먹이 획득 및 자기 자신과의 충돌 판정 처리.
+
+### 📂 파일 구조 및 변경 사항 (Hierarchy & Files)
+- **New Script**: `SnakeGame.cs`
+- **Updated Hierarchy (Game_Snake 구조)**:
+  - `Game_Snake` (Root)
+    ├── `SnakeManager` (SnakeGame 스크립트 부착)
+    │    ├── (Inspector) Body Prefab: `BodyPart`
+    │    ├── (Inspector) Food Prefab: `Food`
+    │    └── (Inspector) Game Area: `GameArea` 연결
+    ├── `GameArea` (뱀과 먹이가 생성/이동하는 실제 플레이 영역)
+    ├── `Score_UI` (점수판 Prefab)
+    └── `Popup_GameOver` (게임 종료 팝업 Prefab)
+
 ## [2026.01.07] (수) [2차] - 유니티 미니게임 7호: Whack-A-Mole 개발
 
 ### 🎯 오늘의 목표 (Daily Goal)
