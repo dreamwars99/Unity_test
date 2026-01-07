@@ -1,4 +1,57 @@
 
+
+## [2026.01.07] (수) [4차] - 유니티 미니게임 9호: Drop & Merge 개발
+
+### 🎯 오늘의 목표 (Daily Goal)
+- 물리 엔진(Rigidbody 2D)을 활용한 '수박 게임(Suika Game)' 스타일의 머지(Merge) 아케이드 게임 구현.
+- 마우스 입력을 UI 좌표계로 변환하여 정밀한 오브젝트 투하(Drop) 시스템 구축.
+
+### 🎮 게임 설명 (Game Description)
+- **Drop & Merge**: 마우스를 움직여 위치를 조준하고, 클릭하여 공을 즉시 떨어트리는 하이 템포 아케이드 게임.
+- **Merge Logic**: 같은 색상(Level)의 공이 물리적으로 충돌하면 합체하여 다음 단계의 공으로 진화.
+- **Physics**: 중력 가속(gravityScale)을 10배로 높여 묵직한 조작감을 구현하고, 합체 시 튀어 오르는 연출(AddForce)로 타격감 강화.
+
+### 💻 스크립트 로직 & 구조 (Detailed Logic)
+- **`MergeManager.cs` (Core)**:
+  - **Input Handling**: 마우스 X좌표를 Screen.width 비율로 계산하여 게임 내 좌표로 변환, 클릭 시 즉시 투하 로직 구현.
+  - **Object Pooling Logic**: 손에 들고 있는 공(currentBall)은 물리 연산을 끄고 대기하다가, 투하 시 Dynamic 모드로 전환.
+  - **Speed Tuning**: 게임의 속도감을 위해 공 생성 쿨타임을 0.05초로 극한까지 단축.
+- **`MergeBall.cs` (Object)**:
+  - `OnCollisionEnter2D`에서 상대방 공의 ID(`GetInstanceID`)를 비교하여 중복 합체 방지.
+- **`MergeWallBuilder.cs` (Tool)**:
+  - 해상도 변경에 대응하기 위해 게임 시작 시 자동으로 화면 크기에 맞는 바닥과 벽(BoxCollider2D)을 생성.
+
+### 🐛 트러블슈팅 및 시행착오 (Troubleshooting & Trial and Error)
+- **좌표계 혼동 (UI vs World)**:
+  - **문제**: 마우스 좌표(Screen)를 그대로 사용하여 공이 엉뚱한 위치에 생성됨.
+  - **해결**: RectTransformUtility를 사용하려다 복잡하여, 화면 비율(Input.mousePosition.x / Screen.width)을 이용한 상대 좌표 계산법으로 단순화하여 해결.
+- **조작 방식 변경 (UX)**:
+  - **시도**: 드래그 앤 드롭 방식을 구현했으나 속도감이 떨어지고 답답함.
+  - **변경**: 마우스를 따라다니다 클릭하면 즉시 발사되는 'Point & Click' 방식으로 변경하여 아케이드성 강화.
+- **스폰 충돌 버그 (Spawn Collision)**:
+  - **문제**: 연사 속도를 높이자, 생성된 공이 떨어지기 전에 다음 공과 겹쳐서 공중에서 합체되거나 에러 발생.
+  - **해결**: 대기 중인 공(currentBall)의 Collider를 비활성화(Ghost Mode)하여, 투하 전까지는 물리 충돌을 무시하도록 수정.
+- **물리 튕김 현상 (Physics Force)**:
+  - **문제**: 합체 시 AddForce(500f)를 적용하자 공이 화면 밖으로 날아가 복귀하지 않음.
+  - **해결**: 튕기는 힘을 300f로 하향 조정하고, 중력 가속을 10배로 늘려 바닥으로 빠르게 복귀하도록 밸런스 조정.
+- **바닥 높이 이슈**:
+  - **문제**: 자동 생성된 바닥이 너무 높아 플레이 영역이 좁음.
+  - **해결**: MergeWallBuilder에서 gameHeight를 2100으로 늘리고 floorHeight 오프셋을 -350으로 조정하여 바닥을 화면 하단으로 내림.
+
+### 📂 파일 구조 및 변경 사항
+- **New Scripts**: `MergeManager.cs`, `MergeBall.cs`, `MergeWallBuilder.cs`
+- **Updated Hierarchy (Game_MergeDrop 구조)**:
+  - `Game_MergeDrop`
+    ├── `MergeManager` (Script: MergeManager)
+    ├── `Walls`
+    │   ├── `Wall_Left` (BoxCollider2D)
+    │   ├── `Wall_Right` (BoxCollider2D)
+    │   └── `Wall_Bottom` (BoxCollider2D)
+    ├── `SpawnPoint`
+    ├── `DeadZone`
+    ├── `Score_UI` (점수판)
+    └── `Popup_GameOver` (게임오버 팝업)
+
 ## [2026.01.07] (수) [3차] - 유니티 미니게임 8호: Classic Snake 개발
 
 ### 🎯 오늘의 목표 (Daily Goal)
