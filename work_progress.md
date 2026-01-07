@@ -1,4 +1,44 @@
 
+## [2026.01.07] (수) [1차] - 유니티 미니게임 6호: Arrow Beat 개발
+
+### 🎯 오늘의 목표 (Daily Goal)
+- `Input.GetKeyDown(KeyCode)`를 활용한 키보드 방향키 입력 처리 시스템 구현.
+- 게임이 진행될수록 제한 시간이 줄어드는 **동적 난이도 조절(Dynamic Difficulty Adjustment)** 알고리즘 적용.
+- `PlayerPrefs`를 활용한 최고 점수(Best Score) 저장 기능 구현.
+
+### 🎮 게임 설명 (Game Description)
+- **Arrow Beat (방향키 맞추기)**: 화면에 뜨는 지시(UP, DOWN, LEFT, RIGHT)에 맞춰 키보드 방향키를 빠르게 누르는 순발력 게임.
+- **Dynamic Speed**: 정답을 맞출 때마다 제한 시간이 `0.1초`씩 줄어들어 점점 빨라짐 (최소 `0.5초`까지).
+- **Reaction Bonus**: 얼마나 빨리 반응했는지(`reactionTime`)를 계산하여 점수에 가산점 부여.
+
+### 💻 스크립트 로직 & 구조 (Detailed Logic)
+- **`ArrowGameManager.cs`**:
+  - **Input System**: `Input.anyKeyDown`으로 입력을 감지한 후, `Input.GetKeyDown(KeyCode.UpArrow)` 등으로 구체적인 방향 판별.
+  - **Random Generator**: `Random.Range(0, 4)`를 사용해 4가지 방향 중 하나를 무작위로 생성(`NextArrow`).
+  - **Timer Logic**: `currentMaxTime` 변수를 두어, 성공 시 `Mathf.Max(minTimeLimit, currentMaxTime - timeReduction)`을 통해 난이도를 상승시킴.
+  - **Scoring**: 기본 점수 + (남은 시간 * 100) 보너스 점수 합산 방식.
+  - **Penalty**: 틀린 키를 입력하면 점수 차감(-50) 및 남은 시간 차감(-0.5초)으로 긴장감 부여.
+
+### 📂 파일 구조 및 변경 사항 (Hierarchy & Files)
+- **New Script**: `ArrowGameManager.cs`
+- **Updated Hierarchy (Panel_Super 구조)**:
+  - `Panel_Super` (Root)
+    ├── `Lobby_Main` (게임 선택 화면)
+    └── **`Game_ArrowBeat`** (New! - 6호기)
+        ├── `Txt_Target` (중앙 화살표/지시어)
+        ├── `ArrowBeat_UI` (UI 그룹)
+        │    ├── `Txt_HighScore`
+        │    ├── `Txt_Score`
+        │    └── `Popup_GameOver`
+        │         ├── `Txt_GameOver`
+        │         ├── `Txt_FinalSocre`
+        │         └── `Btn_Retry`
+        │              └── `Text (TMP)`
+        ├── `Txt_Time` (남은 시간)
+        ├── `Txt_Feedback` (판정 텍스트)
+        └── `Manager_Arrow` (ArrowGameManager 스크립트 부착)
+
+
 ## [2026.01.06] (화) [4차] - 통합 로비 시스템 (Arcade Lobby) 구축
 
 ### 🎯 오늘의 목표 (Daily Goal)
