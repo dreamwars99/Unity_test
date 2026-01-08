@@ -1,5 +1,67 @@
 
 
+## [2026.01.08] (목) [1차] - 유니티 미니게임 10호: Galaxy Defender (Space Shooter) 개발
+
+### 🎯 오늘의 목표 (Daily Goal)
+- 플레이어 이동, 적 생성, 투사체 발사가 포함된 **종스크롤 슈팅 게임(Vertical Scrolling Shooter)**의 완전한 구현.
+- **보스(Boss)** 등장, **무기 강화(Item)**, **무한 스테이지** 시스템을 통해 게임의 순환 구조(Core Loop) 완성.
+- 유니티 물리 엔진(`Physics 2D`)의 충돌 처리 미세 조정 및 트러블슈팅.
+
+### 🎮 게임 설명 (Game Description)
+- **Galaxy Defender**: 몰려오는 적 기체를 격추하고 살아남는 탄막 슈팅 게임.
+- **Upgrade System**: 아이템 획득 시 총알이 1발 -> 2발(양옆) -> 3발(부채꼴)로 강화됨.
+- **Boss Raid**: 점수 1000점마다 거대 보스가 등장하며, 처치 시 난이도가 상승한 다음 스테이지로 진입.
+
+### 💻 스크립트 로직 & 구조 (Detailed Logic)
+- **`SpacePlayer.cs`**:
+  - **Hybrid Control**: 마우스(터치)의 직관적인 이동과 키보드의 정밀 이동을 동시에 지원.
+  - **Auto Fire**: `fireRate` 주기로 총알을 자동 발사하며, `weaponLevel`에 따라 발사 패턴(각도, 개수)이 변화.
+  - **Safety Init**: 시작 시 `SyncColliderSize()`를 호출하여 이미지 크기에 맞춰 충돌 박스를 자동 보정.
+- **`SpaceEnemy.cs` & `SpaceBoss.cs`**:
+  - **AI Logic**: 적은 하강 공격, 보스는 상단에서 좌우 왕복(`PingPong`)하며 부채꼴 탄막 형성.
+  - **Z-Axis Lock**: 2D 물리 연산 오류 방지를 위해 매 프레임 Z축 좌표를 0으로 강제 고정.
+- **`SpaceManager.cs`**:
+  - **Stage Loop**: `Score` 기반으로 일반 몹 웨이브와 보스 페이즈(`isBossPhase`)를 전환.
+  - **Entity Management**: 게임 재시작(Retry) 시 `Scene`을 다시 로드하지 않고, 태그(`Tag`)를 기반으로 적과 총알만 삭제하는 **Soft Reset** 구현.
+
+### 🐛 대규모 트러블슈팅 및 시행착오 (Major Troubleshooting)
+이번 프로젝트는 물리 충돌과 객체 관리에서 많은 기술적 난관이 있었으며, 이를 다음과 같이 해결함.
+
+1.  **물리 충돌 미작동 (Physics Sleep)**:
+    - *현상*: 설정이 완벽함에도 충돌 이벤트(`OnTriggerEnter2D`)가 발생하지 않음.
+    - *원인*: 플레이어, 적, 총알 모두 `Kinematic` 바디를 사용하여, 유니티 물리 엔진이 연산을 생략함.
+    - *해결*: 총알(`Bullet`)의 `Rigidbody 2D`를 **`Dynamic`**으로 변경하고 `Gravity Scale`을 0으로 설정하여 물리 연산을 강제 활성화.
+2.  **과도한 객체 삭제 (Logic Error)**:
+    - *현상*: 재시작(Retry) 시 UI와 매니저까지 삭제되어 게임이 멈춤.
+    - *원인*: `ClearAllEntities` 함수가 부모 컨테이너의 모든 자식을 무차별 삭제함.
+    - *해결*: `CompareTag`를 사용하여 `Enemy`, `EnemyBullet`, `PlayerBullet` 태그를 가진 객체만 선별적으로 파괴하도록 수정.
+3.  **간헐적 충돌 무시 (Z-Fighting)**:
+    - *현상*: 분명히 닿았는데 가끔 충돌 판정이 무시됨.
+    - *원인*: UI(`Canvas`) 상에서 `Instantiate` 될 때 Z축 좌표가 미세하게 틀어져(0.001 차이 등) 물리적으로 엇갈림.
+    - *해결*: 모든 동적 오브젝트(`Enemy`, `Boss`, `Item`)의 `Update` 문에 `transform.localPosition.z = 0`을 강제하는 코드를 삽입하여 2D 평면 유지.
+4.  **피격 범위 불일치 (Hitbox Mismatch)**:
+    - *현상*: 플레이어나 적의 이미지는 큰데, 중앙의 작은 점을 맞춰야만 죽음.
+    - *원인*: `BoxCollider2D`의 크기가 이미지 크기(`RectTransform`)와 연동되지 않고 기본값(1x1)으로 설정됨.
+    - *해결*: 스크립트 `Start()` 시점에 `GetComponent<BoxCollider2D>().size = GetComponent<RectTransform>().sizeDelta`를 실행하는 `SyncColliderSize()` 함수를 구현하여 자동 동기화.
+
+### 📂 파일 구조 및 변경 사항
+- **New Scripts**: `SpacePlayer.cs`, `SpaceEnemy.cs`, `SpaceBoss.cs`, `SpaceBullet.cs`, `SpaceItem.cs`, `SpaceManager.cs`
+- **Updated Hierarchy**:
+  ```text
+    Game_SpaceShooter (GameObject)
+    ├── SpaceManager 
+    (GameObject)
+    │   └── (Component: SpaceManager.cs)
+    ├── Bullet_SpawnPoint (GameObject)
+    ├── Player (GameObject)
+    │   ├── (Component: BoxCollider2D)
+    │   └── (Component: Rigidbody2D)
+    ├── Txt_Notice (GameObject, TextMeshPro - "WARNING!")
+    ├── Popup_GameOver (Prefab Instance)
+    └── Score_UI (Prefab Instance)
+
+  ```
+
 ## [2026.01.07] (수) [4차] - 유니티 미니게임 9호: Drop & Merge 개발
 
 ### 🎯 오늘의 목표 (Daily Goal)
