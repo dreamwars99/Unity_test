@@ -1,5 +1,32 @@
 
 
+## [2026.01.09] (금) [1차] - 로비 시스템 확장 (Scroll View & UI 정렬)
+
+### 🎯 오늘의 목표 (Daily Goal)
+- 게임이 10종으로 늘어남에 따라, 한 화면에 모두 담기 힘든 기존 그리드 방식을 개선.
+- `Scroll View`를 도입하여 향후 게임이 20개 이상 늘어나도 확장 가능한 유연한 로비 UI 구축.
+
+### 💻 스크립트 로직 (Scripting & Logic)
+- **`LobbyManager.cs` UX 개선**:
+  - `backButton.SetActive(false)` 로직을 추가하여 로비 화면에서는 '홈 버튼'을 숨기고, 게임 진입 시에만 노출되도록 처리.
+  - `games` 배열을 통해 다수의 게임 패널을 인덱스로 관리하며, `OpenGame(int)` 함수 하나로 패널 전환, 홈 버튼 활성화, `Time.timeScale` 초기화를 통합 관리.
+
+### 🎨 UI 및 연출 (UI & Visuals)
+- **Scroll View 적용**:
+  - 기존 정적 패널을 `Scroll View` 컴포넌트로 교체하여 스크롤 가능한 영역 확보.
+- **자동 정렬 시스템**:
+  - `Content` 오브젝트에 `Grid Layout Group`을 적용하고 `Child Alignment`를 **Upper Center**로 설정하여 버튼들이 항상 화면 중앙 상단부터 예쁘게 정렬되도록 구성.
+  - `Content Size Fitter`를 추가하여 버튼 개수에 따라 스크롤 영역 길이가 자동으로 늘어나도록 설정 (Vertical Fit: Preferred Size).
+
+### 📂 파일 구조 및 변경 사항
+- **Updated Script**: `LobbyManager.cs`
+- **Updated Hierarchy**:
+  - `Lobby_Main`
+    └── `ScrollView_Games` (New)
+        └── `Viewport`
+            └── `Content` (Grid Layout Group + Content Size Fitter)
+                ├── `Btn_Game01` ... `Btn_Game10`
+
 ## [2026.01.08] (목) [1차] - 유니티 미니게임 10호: Galaxy Defender (Space Shooter) 개발
 
 ### 🎯 오늘의 목표 (Daily Goal)
