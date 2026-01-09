@@ -21,11 +21,13 @@
 ### 📂 파일 구조 및 변경 사항
 - **Updated Script**: `LobbyManager.cs`
 - **Updated Hierarchy**:
-  - `Lobby_Main`
-    └── `ScrollView_Games` (New)
-        └── `Viewport`
-            └── `Content` (Grid Layout Group + Content Size Fitter)
-                ├── `Btn_Game01` ... `Btn_Game10`
+  ```text
+  Lobby_Main
+  └── ScrollView_Games (New)
+      └── Viewport
+          └── Content (Grid Layout Group + Content Size Fitter)
+              ├── Btn_Game01 ... Btn_Game10
+  ```
 
 ## [2026.01.08] (목) [1차] - 유니티 미니게임 10호: Galaxy Defender (Space Shooter) 개발
 
