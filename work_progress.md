@@ -1,4 +1,78 @@
 
+
+## [2026.01.13] (화) [2차] - 유니티 미니게임 12호: Vertical Pong 개발
+
+### 🎯 오늘의 목표 (Daily Goal)
+- 유니티 2D 물리 엔진의 핵심인 `Physics Material 2D`(마찰력/탄성)와 `Rigidbody 2D`를 활용한 아케이드 퐁 게임 구현.
+- 키보드와 마우스 입력을 동시에 지원하는 하이브리드 조작 시스템 및 우선순위 로직 설계.
+- UI 좌표계(`RectTransform`)와 물리 좌표계(`Collider`) 간의 괴리를 극복하고 정확한 충돌 판정 구현.
+
+### 🎮 게임 설명 (Game Description)
+- **Vertical Pong**: 위아래로 공을 주고받으며, 적 골대(Top)에 넣으면 승리하여 다음 스테이지로 넘어가고, 내 골대(Bottom)에 들어오면 패배하는 서바이벌 퐁 게임.
+- **Physics**: 공은 마찰력 0, 탄성 1의 완전 탄성 충돌을 하며, 벽이나 패들에 닿을 때마다 속도가 점진적으로 빨라짐.
+- **Hybrid Control**: 키보드(정밀 조작)와 마우스(직관적 조작)를 상황에 맞춰 자연스럽게 전환하며 플레이 가능.
+
+### 💻 스크립트 로직 & 구조 (Detailed Logic)
+- **`PongManager.cs` (Core)**:
+  - **Stage System**: 적 골대에 공을 넣으면 `OnStageClear`를 호출하여 스테이지(난이도)를 높이고 게임을 이어감.
+  - **Singleton**: `instance`를 통해 공, 골대, 패들 등 모든 객체와 데이터(점수)를 중앙에서 통제.
+  - **Safety Logic**: 시작 시 `GameObject.Find`를 통해 팝업 연결 여부를 스스로 검사하고 복구하는 안전장치 포함.
+- **`PongBall.cs`**:
+  - **Velocity Control**: `AddForce` 대신 `rb.velocity`를 직접 수정하여 일정한 속도감을 유지하고 즉각적인 반응성 확보.
+  - **Tunneling Prevention**: `CollisionDetectionMode.Continuous`를 강제 적용하여 고속 이동 시 벽을 뚫는 현상 방지.
+- **`PongPaddle.cs`**:
+  - **Input Priority**: `Input.GetAxis`와 `Input.mousePosition`을 모두 감시하되, 키보드 입력이 발생하면 마우스 위치를 갱신하지 않도록 하여 입력 간섭(떨림 현상) 해결.
+- **`PongGoal.cs`**:
+  - **Role Separation**: `isPlayerGoal` 변수 하나로 '득점 존(Top)'과 '사망 존(Bottom)'의 역할을 분기 처리.
+
+### 🐛 대규모 트러블슈팅 (Major Troubleshooting)
+이번 프로젝트는 유니티 2D 물리와 UI 시스템의 차이로 인해 많은 시행착오를 겪음.
+
+1.  **렌더링 순서 문제 (Invisible Ball)**:
+    - *현상*: 공이 움직이는 소리는 나는데 화면에 보이지 않음.
+    - *원인*: `Sprite Renderer`는 UI `Canvas` 뒤쪽(Layer 순서상)에 그려짐.
+    - *해결*: 공과 패들을 `Image` 컴포넌트로 교체하고 Hierarchy 순서를 조정하여 UI 위로 렌더링.
+2.  **물리 충돌 범위 불일치 (Small Collider)**:
+    - *현상*: 공이 패들을 그대로 통과함.
+    - *원인*: UI 크기는 100x100 등으로 키웠으나, `BoxCollider2D`는 기본값(1x1)으로 남아있어 실제 충돌 영역이 점 수준이었음.
+    - *해결*: Collider의 `Size`를 이미지 크기(Ball: 100, Wall: 2700 등)에 맞춰 수동으로 동기화.
+3.  **피벗(Pivot) 문제**:
+    - *현상*: 이미지는 여기 있는데, 충돌 판정은 엉뚱한 곳에서 일어남.
+    - *원인*: UI는 Pivot(0.5, 1) 등을 쓰지만, Collider는 항상 센터(0, 0) 기준임.
+    - *해결*: 모든 물리 객체의 RectTransform Pivot을 `(0.5, 0.5)` 정중앙으로 통일.
+4.  **터널링 현상 (Tunneling)**:
+    - *현상*: 공 속도가 빨라지니 벽을 뚫고 나감.
+    - *해결*: Rigidbody 2D 설정을 `Dynamic` + `Continuous` 모드로 변경하여 매 프레임 연속 검사 수행.
+5.  **시작 즉시 게임오버 (Spawn Kill)**:
+    - *현상*: 게임 시작 0.1초 만에 패배 팝업이 뜸.
+    - *원인*: 골대(`Goal_Bottom`)의 Collider가 너무 커서(또는 위치가 낮아서) 공이 생성되는 (0,0) 좌표까지 침범함.
+    - *해결*: 골대 위치를 `1450`으로 밀어내고 크기를 조절하여 중앙 공간 확보.
+6.  **조작 간섭 (Input Conflict)**:
+    - *현상*: 키보드로 이동하려 하면 마우스 커서 위치로 패들이 순간이동함.
+    - *해결*: 키보드 입력 값이 `0`이 아닐 때는 마우스 입력을 무시하고, 마우스가 일정 거리 이상 움직였을 때만 마우스 조작을 활성화하는 로직 추가.
+
+### 📂 파일 구조 및 최종 설정 (Hierarchy & Settings)
+- **Hierarchy Structure**:
+  ```text
+  Game_Pong
+   ├── PongManager (Script: PongManager.cs)
+   ├── Goals
+   │    ├── Goal_Top (Y: 1450, Check: IsPlayerGoal=True)
+   │    └── Goal_Bottom (Y: 10, Check: IsPlayerGoal=False)
+   ├── Paddle_Enemy (AI)
+   ├── Paddle_Player (Input Controlled)
+   ├── Walls
+   │    ├── Wall_Left (Size Y: 2700)
+   │    └── Wall_Right (Size Y: 2700)
+   ├── UI_Pong
+   │    ├── Txt_PlayerScore
+   │    ├── Txt_EnemyScore
+   │    ├── Txt_Result
+   │    ├── Txt_BestScore
+   │    └── Txt_Stage
+   ├── Ball (Size: 100x100, Color: Red)
+   └── Popup_GameOver
+
 ## [2026.01.13] (화) [1차] - 유니티 미니게임 11호: Acid Rain (타자 디펜스) 개발
 
 ### 🎯 오늘의 목표 (Daily Goal)
