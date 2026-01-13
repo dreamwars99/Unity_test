@@ -1,4 +1,60 @@
 
+## [2026.01.13] (화) [1차] - 유니티 미니게임 11호: Acid Rain (타자 디펜스) 개발
+
+### 🎯 오늘의 목표 (Daily Goal)
+- `List<string>`과 문자열 처리(`Trim`, `ToLower`)를 활용한 타자 연습 게임 'Acid Rain' 구현.
+- `Update` 루프 내에서 키보드 입력(`Input.inputString`)을 받아 처리하는 입력 시스템 구축.
+
+### 🎮 게임 설명 (Game Description)
+- **Acid Rain (산성비)**: 하늘에서 떨어지는 단어를 타이핑하여 파괴하는 디펜스 게임.
+- **System**: 단어를 맞추면 점수 획득, 바닥에 닿거나 화면 밖으로 나가면 HP 감소.
+- **Difficulty**: 점수가 오를수록 스테이지가 상승하며, 단어의 낙하 속도(`Time.timeScale` 활용)가 빨라짐.
+
+### 💻 스크립트 로직 & 구조 (Detailed Logic)
+- **`AcidGameManager.cs` (Core)**:
+  - **String Handling**: 대소문자 구분 없이 비교하기 위해 `ToLower()` 사용. 사용자가 실수로 입력한 공백을 제거하기 위해 `Trim()` 처리 및 스페이스바 입력 무시 로직 적용.
+  - **Word Management**: `List<AcidWord> activeWords`를 사용하여 현재 화면에 존재하는 단어 객체들을 실시간으로 관리 및 검색.
+  - **UI State**: `UpdateUI` 함수에서 체력(HP)을 텍스트(`O`)의 개수와 색상(`Color.red`)으로 시각화.
+- **`AcidWord.cs`**:
+  - `transform.Translate(Vector3.down)`으로 이동하며, Y좌표가 임계값(-1000) 이하로 떨어질 경우 매니저에게 'Miss' 판정을 요청하는 안전장치 구현.
+
+### 🐛 트러블슈팅 및 시행착오 (Major Troubleshooting)
+1.  **입력 판정 실패 (String Mismatch)**:
+    - *현상*: 정확히 입력했음에도 "Miss" 로그가 뜨며 단어가 파괴되지 않음.
+    - *원인*: 습관적으로 단어 뒤에 스페이스바(공백)를 입력하여 `"apple "`이 입력값으로 들어감.
+    - *해결*: `Input.inputString` 처리 루프에서 공백(`' '`) 입력을 아예 차단하고, 비교 시 `Trim()`을 수행하여 양옆 공백을 제거.
+2.  **HP 미감소 (Logic Error)**:
+    - *현상*: 단어를 놓쳤는데 게임이 끝나지 않고 체력이 유지됨.
+    - *원인*: 단어 객체가 `DeadZone`에 닿기 전에 화면 밖 좌표에서 스스로 `Destroy` 되도록 설정되어 있었음.
+    - *해결*: 단어 스크립트(`AcidWord.cs`)에서 삭제 전 반드시 매니저의 `OnWordHitBottom` 함수를 호출하여 체력을 깎도록 로직 수정.
+3.  **이모지 깨짐 현상 (Tofu Issue)**:
+    - *현상*: HP를 하트 이모지(❤️)로 표시하려 했으나, 폰트 미지원으로 네모 박스(Tofu)로 출력됨.
+    - *해결*: 텍스트를 알파벳 **'O'**로 변경하고, 스크립트에서 `txtHP.color = Color.red`를 강제 적용하여 붉은 구슬처럼 보이도록 시각적 타협.
+4.  **엔터 키 UI 중복 실행 버그 (EventSystem Focus)**:
+    - *현상*: 단어 입력을 위해 엔터(Enter)를 쳤는데, 하단 내비게이션 바의 버튼이 함께 눌려 화면이 전환됨.
+    - *원인*: 유니티 UI 시스템이 마지막으로 클릭한 버튼에 포커스(Focus)를 유지하고 있어서, 엔터 입력 시 `Submit` 이벤트가 버튼 클릭으로 연결됨.
+    - *해결*: `AcidGameManager`의 `Start`와 `Update`에서 `EventSystem.current.SetSelectedGameObject(null)`을 호출하여, UI 포커스를 강제로 해제하도록 처리.
+
+### 📂 파일 구조 및 변경 사항 (Hierarchy)
+- **New Scripts**: `AcidWord.cs`, `AcidGameManager.cs`, `DeadZone.cs`
+- **Hierarchy Structure**:
+  ```text
+  Game_AcidRain (GameObject)
+  ├── AcidManager (Script: AcidGameManager.cs)
+  ├── DeadZone (Script: DeadZone.cs / BoxCollider2D)
+  ├── Input_UI
+  │   ├── Img_InputBg
+  │   └── Txt_Input (TMP)
+  ├── Score_UI (Prefab)
+  │   ├── Txt_HighScore (Best Score)
+  │   ├── Txt_Score
+  │   ├── Txt_Stage
+  │   ├── Txt_HP (Red 'O' Display)
+  │   ├── Txt_HP_text (Label: "HP")
+  │   └── Popup_GameOver
+  │       ├── Txt_FinalScore
+  │       └── Btn_Retry
+  └── SpawnArea (단어 생성 위치)
 
 ## [2026.01.09] (금) [1차] - 로비 시스템 확장 (Scroll View & UI 정렬)
 
