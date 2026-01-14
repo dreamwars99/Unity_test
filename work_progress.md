@@ -1,4 +1,70 @@
 
+## [2026.01.14] (수) [1차] - 유니티 미니게임 13호: Dino Run 개발
+
+### 🎯 오늘의 목표 (Daily Goal)
+- `Rigidbody 2D`의 중력(Gravity)과 `AddForce`를 활용한 횡스크롤 인피니트 러너(Infinite Runner) 구현.
+- **Ground Check** 알고리즘을 통해 '땅에 닿아있을 때만 점프'하는 로직 완성.
+- UI 좌표계(`RectTransform`) 위에서 2D 물리 엔진을 사용할 때 발생하는 좌표 및 크기 괴리 해결.
+
+### 🎮 게임 설명 (Game Description)
+- **Dino Run**: 다가오는 선인장을 점프하여 피하고, 오래 살아남아 점수를 획득하는 아케이드 게임.
+- **Physics**: 중력 스케일 80의 강력한 중력을 적용하여, 체공 시간을 줄이고 바닥에 빠르게 착지하는 '묵직한 조작감' 구현.
+- **Dynamic Difficulty**: 2000점 이상부터 난이도가 상승하며, 장애물 생성 속도가 빨라짐 (겹쳐 나오기 등 불합리한 패턴은 배제).
+
+### 💻 스크립트 로직 & 구조 (Detailed Logic)
+- **`DinoPlayer.cs` (Physics)**:
+  - **Ground Check**: `OnCollisionEnter2D`에서 `Ground` 태그와 충돌했을 때만 `isGrounded = true`로 설정하여 이단 점프 방지.
+  - **Input**: `Input.GetKeyDown(KeyCode.Space)` 또는 화면 터치 시, `isGrounded` 상태라면 `Vector2.up * jumpForce`를 가하여 점프.
+- **`DinoSpawner.cs` (Generator)**:
+  - **Spawn Logic**: `Instantiate`를 통해 장애물을 생성하고, `Random.Range`를 이용해 생성 간격을 유동적으로 조절(0.8초 ~ 1.5초).
+  - **Balance**: 점수 5000점에 도달하면 생성 간격이 최소치로 줄어드는 선형적 난이도 상승 곡선(`Mathf.Lerp`) 적용.
+- **`MoveLeft.cs` (Scroll)**:
+  - 장애물과 배경에 부착되어 `Vector3.left * speed * Time.deltaTime`으로 끊임없이 이동, 화면 밖(`DeadZone`) 이탈 시 스스로 파괴(`Destroy`).
+
+### ⚙️ 핵심 밸런스 및 설정값 (Critical Settings)
+UI 환경에서의 물리감 확보를 위해 다음과 같은 **고중력·고탄성** 세팅을 최종 확정함.
+- **Player (Dino)**:
+  - **Size**: 50 x 50 (이미지 및 Collider 동일)
+  - **Position**: (125, 225)
+  - **Rigidbody 2D**: `Gravity Scale: 80`, `Body Type: Dynamic`, `Freeze Rotation Z: Check`
+  - **Jump Force**: `23,000` (중력 80을 이겨내고 점프하기 위한 수치)
+- **Ground**:
+  - **Size**: 1450 x 100 (1080 해상도에서도 화면 양옆 여백이 생기지 않도록 넉넉하게 확장)
+  - **Collider Size**: 1450 x 100 (이미지 크기와 동기화 필수)
+
+### 🐛 대규모 트러블슈팅 (Major Troubleshooting)
+1.  **점프 불가 현상 (Gravity Trap)**:
+    - *현상*: 스페이스바를 눌러도 반응이 없거나, `isGrounded`가 순간적으로 꺼졌다 켜지기만 함.
+    - *원인*: 초기 `Gravity Scale(40)`에 비해 `Jump Force(1200)`가 너무 약해서, 0.001초만 떴다가 즉시 착지하는 현상 발생.
+    - *해결*: 점프력을 `23,000`으로 대폭 상향하고, 중력을 `80`으로 더 높여 **"빠르게 뜨고 빠르게 착지하는"** 쫄깃한 조작감 완성.
+2.  **공중 부양 버그 (Collider Mismatch)**:
+    - *현상*: 플레이어 이미지는 바닥에 붙어 있는데, Y좌표가 75에서 고정되어 붕 뜬 것처럼 보임.
+    - *원인*: 이미지는 50x50으로 줄였으나, `BoxCollider2D` 사이즈가 100x100으로 남아있어 투명한 박스가 바닥에 닿아 있었음.
+    - *해결*: Collider의 Size를 이미지와 동일하게 50x50으로 수정.
+3.  **UI 렌더링 순서 (Layer Order)**:
+    - *현상*: 플레이어가 배경이나 스포너 뒤에 가려 보이지 않음.
+    - *해결*: Hierarchy 상에서 `Player_Dino`를 가장 아래쪽(UI 렌더링 최상단)으로 배치하여 해결.
+4.  **불합리한 난이도 패턴 (Unfair Patterns)**:
+    - *현상*: 2000점 이후 장애물이 겹쳐 나오거나 공중에 떠서 나오는데, 점프 높이가 고정된 게임 특성상 피하는 게 불가능함(억까).
+    - *해결*: 특수 패턴(Double, Jump)을 전량 삭제하고, 대신 장애물 등장 속도를 빠르게 하는 것으로 난이도 방향성 수정.
+
+### 📂 파일 구조 및 최종 계층 (Hierarchy Structure)
+```
+Game_DinoRun (Group)
+ ├── DinoManager (Script: DinoManager.cs / Singleton)
+ ├── Ground (Image, BoxCollider2D, Tag: "Ground") 
+ │    └── (Size: 1450x100, Pos Y: -900)
+ ├── Spawner (Script: DinoSpawner.cs)
+ │    └── (Pos X: -100, Pos Y: 150)
+ ├── UI_Dino
+ │    ├── Txt_Score
+ │    ├── Txt_HighScore
+ │    └── Popup_GameOver
+ ├── DeadZone (Empty Object for cleanup)
+ └── Player_Dino (Image, Rigidbody2D, BoxCollider2D)
+      ├── Script: DinoPlayer.cs
+      └── Settings: Gravity 80, Jump 23000
+```
 
 ## [2026.01.13] (화) [2차] - 유니티 미니게임 12호: Vertical Pong 개발
 

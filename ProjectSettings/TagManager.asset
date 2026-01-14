@@ -10,6 +10,8 @@ TagManager:
   - Item
   - Boss
   - Block
+  - Ground
+  - Obstacle
   layers:
   - Default
   - TransparentFX
